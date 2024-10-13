@@ -1,7 +1,7 @@
 {
   "name": "nextjs",
-  "description": "Next js starter kit",
-  "author": "Anayat khan",
+  "description": "Next.js 14 + Tailwind CSS + TypeScript Starter Kit",
+  "author": "Gustavo Felix",
   "version": "0.1.0",
   "private": true,
   "scripts": {
