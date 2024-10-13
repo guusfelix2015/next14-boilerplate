@@ -1,13 +1,13 @@
 {
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "module": "commonjs",
-    "target": "ES6",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true
-  },
-  "include": ["src/__tests__", "src/**/*.test.tsx", "src/**/*.test.ts"]
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "module": "commonjs",
+        "target": "ES6",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true
+    },
+    "include": ["src/__tests__", "src/**/*.test.tsx", "src/**/*.test.ts"]
 }
