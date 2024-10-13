@@ -1,3 +1,45 @@
 {
-    "extends": "next/core-web-vitals"
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "react", "jsx-a11y", "simple-import-sort"],
+  "rules": {
+    // Regras TypeScript
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    // Regras React
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/jsx-sort-props": [
+      "error",
+      {
+        "callbacksLast": true
+      }
+    ],
+    // Regras de acessibilidade
+    "jsx-a11y/anchor-is-valid": "warn",
+    // Regras de importação
+    "simple-import-sort/imports": "error",
+    "import/order": "off", // Desligar a regra padrão de ordenação
+    // Regras Unicorn
+    // Outras boas práticas
+    "no-console": "warn",
+    "prefer-const": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "ignorePatterns": ["node_modules/", ".next/", "out/"]
 }

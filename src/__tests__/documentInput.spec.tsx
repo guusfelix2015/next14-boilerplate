@@ -1,62 +1,63 @@
-import { DocumentInput } from "../components/DocumentInput";
 import { render, screen } from "@testing-library/react";
-import { useForm, FieldErrors, FormProvider } from "react-hook-form";
+import { FieldErrors, FormProvider, useForm } from "react-hook-form";
+
+import { DocumentInput } from "../components/DocumentInput";
 
 describe("DocumentInput", () => {
-    interface TestFormSchema {
-        document: string;
-    }
+  interface TestFormSchema {
+    document: string;
+  }
 
-    const setup = (
-        errors: FieldErrors<TestFormSchema> = {},
-        handleDocumentChange = jest.fn()
-    ) => {
-        const TestComponent = () => {
-            const methods = useForm<TestFormSchema>({
-                defaultValues: { document: "" },
-            });
+  const setup = (
+    errors: FieldErrors<TestFormSchema> = {},
+    handleDocumentChange = jest.fn()
+  ) => {
+    const TestComponent = () => {
+      const methods = useForm<TestFormSchema>({
+        defaultValues: { document: "" },
+      });
 
-            return (
-                <FormProvider {...methods}>
-                    <DocumentInput
-                        type="text"
-                        label="CPF ou CNPJ"
-                        name="document"
-                        register={methods.register}
-                        errors={errors}
-                        handleDocumentChange={handleDocumentChange}
-                        placeholder="000.000.000-00 ou 00.000.000/0000-00"
-                    />
-                </FormProvider>
-            );
-        };
-
-        render(<TestComponent />);
+      return (
+        <FormProvider {...methods}>
+          <DocumentInput
+            errors={errors}
+            handleDocumentChange={handleDocumentChange}
+            label="CPF ou CNPJ"
+            name="document"
+            placeholder="000.000.000-00 ou 00.000.000/0000-00"
+            register={methods.register}
+            type="text"
+          />
+        </FormProvider>
+      );
     };
 
-    it("should render input field with correct label", () => {
-        setup();
-        expect(screen.getByLabelText(/CPF ou CNPJ/i)).toBeInTheDocument();
-    });
+    render(<TestComponent />);
+  };
 
-    it("should display error message when there is an error", () => {
-        const errors: FieldErrors<TestFormSchema> = {
-            document: { message: "Documento inválido", type: "validate" },
-        };
+  it("should render input field with correct label", () => {
+    setup();
+    expect(screen.getByLabelText(/CPF ou CNPJ/i)).toBeInTheDocument();
+  });
 
-        setup(errors);
+  it("should display error message when there is an error", () => {
+    const errors: FieldErrors<TestFormSchema> = {
+      document: { message: "Documento inválido", type: "validate" },
+    };
 
-        expect(screen.getByText(/Documento inválido/i)).toBeInTheDocument();
-    });
+    setup(errors);
 
-    it("should apply error styles to input field when there is an error", () => {
-        const errors: FieldErrors<TestFormSchema> = {
-            document: { message: "Documento inválido", type: "validate" },
-        };
+    expect(screen.getByText(/Documento inválido/i)).toBeInTheDocument();
+  });
 
-        setup(errors);
+  it("should apply error styles to input field when there is an error", () => {
+    const errors: FieldErrors<TestFormSchema> = {
+      document: { message: "Documento inválido", type: "validate" },
+    };
 
-        const documentInput = screen.getByLabelText(/CPF ou CNPJ/i);
-        expect(documentInput).toHaveClass("border-destructive");
-    });
+    setup(errors);
+
+    const documentInput = screen.getByLabelText(/CPF ou CNPJ/i);
+    expect(documentInput).toHaveClass("border-destructive");
+  });
 });

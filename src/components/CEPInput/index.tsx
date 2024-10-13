@@ -1,31 +1,33 @@
-import { InputField } from "../InputField";
-import { InputCEPProps } from "@/src/types";
 import { ZodSchema } from "zod";
 
+import { InputCEPProps } from "@/src/types";
+
+import { InputField } from "../InputField";
+
 export function CEPInput<T extends ZodSchema>({
-    type,
-    label,
-    name,
-    register,
-    errors,
-    placeholder,
-    handleCEPChange,
-    disabled,
-    className,
+  type,
+  label,
+  name,
+  register,
+  errors,
+  placeholder,
+  handleCEPChange,
+  disabled,
+  className,
 }: InputCEPProps<T>) {
-    return (
-        <InputField
-            data-testid="cep-input"
-            disabled={disabled}
-            type={type}
-            label={label}
-            name={name}
-            register={register}
-            errors={errors}
-            onChange={handleCEPChange}
-            placeholder={placeholder}
-            className={className}
-            maxLength={9}
-        />
-    );
+  return (
+    <InputField
+      className={className}
+      data-testid="cep-input"
+      disabled={disabled}
+      errors={errors}
+      label={label}
+      maxLength={9}
+      name={name}
+      placeholder={placeholder}
+      register={register}
+      type={type}
+      onChange={handleCEPChange}
+    />
+  );
 }

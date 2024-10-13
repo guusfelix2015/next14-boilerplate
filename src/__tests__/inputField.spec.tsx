@@ -1,208 +1,209 @@
-import { InputField } from "../components/InputField";
 import { render, screen } from "@testing-library/react";
+import React from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { ZodSchema } from "zod";
-import React from "react";
+
+import { InputField } from "../components/InputField";
 
 interface MockFormValues {
-    name: string;
+  name: string;
 }
 
 describe("InputField Component", () => {
-    const TestComponent = ({
-        errors = {},
-        onChange = jest.fn(),
-        onBlur = jest.fn(),
-        type = "text",
-        label,
-    }: {
-        errors?: FieldErrors<MockFormValues>;
-        onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-        onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-        type?: string;
-        label?: string;
-    }) => {
-        const { register } = useForm<MockFormValues>();
-        return (
-            <InputField<ZodSchema>
-                type={type}
-                label={label}
-                name="name"
-                register={register}
-                errors={errors}
-                placeholder="Enter your name"
-                onChange={onChange}
-                onBlur={onBlur}
-            />
-        );
+  const TestComponent = ({
+    errors = {},
+    onChange = jest.fn(),
+    onBlur = jest.fn(),
+    type = "text",
+    label,
+  }: {
+    errors?: FieldErrors<MockFormValues>;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    type?: string;
+    label?: string;
+  }) => {
+    const { register } = useForm<MockFormValues>();
+    return (
+      <InputField<ZodSchema>
+        errors={errors}
+        label={label}
+        name="name"
+        placeholder="Enter your name"
+        register={register}
+        type={type}
+        onBlur={onBlur}
+        onChange={onChange}
+      />
+    );
+  };
+
+  it("should render input field and label", () => {
+    render(<TestComponent label="Name" />);
+
+    const labelElement = screen.getByText("Name");
+    const inputElement = screen.getByPlaceholderText("Enter your name");
+
+    expect(labelElement).toBeInTheDocument();
+    expect(inputElement).toBeInTheDocument();
+  });
+
+  it("should apply error styles when there is an error", () => {
+    const errors = {
+      name: {
+        message: "Nome é obrigatório",
+        type: "required",
+      },
     };
 
-    it("should render input field and label", () => {
-        render(<TestComponent label="Name" />);
+    render(
+      <TestComponent
+        errors={errors as FieldErrors<MockFormValues>}
+        label="Name"
+      />
+    );
 
-        const labelElement = screen.getByText("Name");
-        const inputElement = screen.getByPlaceholderText("Enter your name");
+    const labelElement = screen.getByText("Name");
+    const inputElement = screen.getByPlaceholderText("Enter your name");
 
-        expect(labelElement).toBeInTheDocument();
-        expect(inputElement).toBeInTheDocument();
-    });
+    expect(labelElement).toHaveClass("text-destructive");
+    expect(inputElement).toHaveClass("border-destructive");
 
-    it("should apply error styles when there is an error", () => {
-        const errors = {
-            name: {
-                message: "Nome é obrigatório",
-                type: "required",
-            },
-        };
+    const errorMessage = screen.getByText("Nome é obrigatório");
+    expect(errorMessage).toBeInTheDocument();
+  });
 
-        render(
-            <TestComponent
-                errors={errors as FieldErrors<MockFormValues>}
-                label="Name"
-            />
-        );
+  it("should use the specified input type when provided", () => {
+    render(<TestComponent type="email" />);
 
-        const labelElement = screen.getByText("Name");
-        const inputElement = screen.getByPlaceholderText("Enter your name");
+    const inputElement = screen.getByPlaceholderText("Enter your name");
 
-        expect(labelElement).toHaveClass("text-destructive");
-        expect(inputElement).toHaveClass("border-destructive");
+    expect(inputElement).toHaveAttribute("type", "email");
+  });
 
-        const errorMessage = screen.getByText("Nome é obrigatório");
-        expect(errorMessage).toBeInTheDocument();
-    });
+  it("should not render label when not provided", () => {
+    render(<TestComponent label={undefined} />);
 
-    it("should use the specified input type when provided", () => {
-        render(<TestComponent type="email" />);
+    const labelElement = screen.queryByText("Name");
+    expect(labelElement).not.toBeInTheDocument();
+  });
 
-        const inputElement = screen.getByPlaceholderText("Enter your name");
+  it("should display the default placeholder if no placeholder is provided", () => {
+    render(<TestComponent />);
 
-        expect(inputElement).toHaveAttribute("type", "email");
-    });
+    const inputElement = screen.getByRole("textbox");
 
-    it("should not render label when not provided", () => {
-        render(<TestComponent label={undefined} />);
+    expect(inputElement).toHaveAttribute("placeholder", "Enter your name");
+  });
 
-        const labelElement = screen.queryByText("Name");
-        expect(labelElement).not.toBeInTheDocument();
-    });
+  it("should use the default input type 'text' if no type is provided", () => {
+    render(<TestComponent />);
 
-    it("should display the default placeholder if no placeholder is provided", () => {
-        render(<TestComponent />);
+    const inputElement = screen.getByPlaceholderText("Enter your name");
 
-        const inputElement = screen.getByRole("textbox");
+    expect(inputElement).toHaveAttribute("type", "text");
+  });
 
-        expect(inputElement).toHaveAttribute("placeholder", "Enter your name");
-    });
+  it("should not apply error styles when there is no error", () => {
+    render(<TestComponent errors={{}} label="Name" />);
 
-    it("should use the default input type 'text' if no type is provided", () => {
-        render(<TestComponent />);
+    const labelElement = screen.getByText("Name");
+    const inputElement = screen.getByPlaceholderText("Enter your name");
 
-        const inputElement = screen.getByPlaceholderText("Enter your name");
+    expect(labelElement).not.toHaveClass("text-destructive");
+    expect(inputElement).not.toHaveClass("border-destructive");
 
-        expect(inputElement).toHaveAttribute("type", "text");
-    });
+    const errorMessage = screen.queryByText("Nome é obrigatório");
+    expect(errorMessage).not.toBeInTheDocument();
+  });
 
-    it("should not apply error styles when there is no error", () => {
-        render(<TestComponent errors={{}} label="Name" />);
+  it("should not render FormError component when there is no error", () => {
+    render(<TestComponent />);
 
-        const labelElement = screen.getByText("Name");
-        const inputElement = screen.getByPlaceholderText("Enter your name");
+    const errorMessage = screen.queryByText("Nome é obrigatório");
+    expect(errorMessage).not.toBeInTheDocument();
+  });
 
-        expect(labelElement).not.toHaveClass("text-destructive");
-        expect(inputElement).not.toHaveClass("border-destructive");
+  it("should render input with type password", () => {
+    render(<TestComponent type="password" />);
 
-        const errorMessage = screen.queryByText("Nome é obrigatório");
-        expect(errorMessage).not.toBeInTheDocument();
-    });
+    const inputElement = screen.getByPlaceholderText("Enter your name");
+    expect(inputElement).toHaveAttribute("type", "password");
+  });
 
-    it("should not render FormError component when there is no error", () => {
-        render(<TestComponent />);
+  it("should render input with type number", () => {
+    render(<TestComponent type="number" />);
 
-        const errorMessage = screen.queryByText("Nome é obrigatório");
-        expect(errorMessage).not.toBeInTheDocument();
-    });
+    const inputElement = screen.getByPlaceholderText("Enter your name");
+    expect(inputElement).toHaveAttribute("type", "number");
+  });
 
-    it("should render input with type password", () => {
-        render(<TestComponent type="password" />);
+  it("should render custom error message in FormError component", () => {
+    const errors = {
+      name: {
+        message: "Custom error message",
+        type: "custom",
+      },
+    };
 
-        const inputElement = screen.getByPlaceholderText("Enter your name");
-        expect(inputElement).toHaveAttribute("type", "password");
-    });
+    render(
+      <TestComponent
+        errors={errors as FieldErrors<MockFormValues>}
+        label="Name"
+      />
+    );
 
-    it("should render input with type number", () => {
-        render(<TestComponent type="number" />);
+    const errorMessage = screen.getByText("Custom error message");
+    expect(errorMessage).toBeInTheDocument();
+  });
 
-        const inputElement = screen.getByPlaceholderText("Enter your name");
-        expect(inputElement).toHaveAttribute("type", "number");
-    });
+  it("should apply correct styles for required error", () => {
+    const errors = {
+      name: {
+        message: "Field is required",
+        type: "required",
+      },
+    };
 
-    it("should render custom error message in FormError component", () => {
-        const errors = {
-            name: {
-                message: "Custom error message",
-                type: "custom",
-            },
-        };
+    render(
+      <TestComponent
+        errors={errors as FieldErrors<MockFormValues>}
+        label="Name"
+      />
+    );
 
-        render(
-            <TestComponent
-                errors={errors as FieldErrors<MockFormValues>}
-                label="Name"
-            />
-        );
+    const labelElement = screen.getByText("Name");
+    expect(labelElement).toHaveClass("text-destructive");
+  });
 
-        const errorMessage = screen.getByText("Custom error message");
-        expect(errorMessage).toBeInTheDocument();
-    });
+  it("should apply correct styles for pattern error", () => {
+    const errors = {
+      name: {
+        message: "Invalid pattern",
+        type: "pattern",
+      },
+    };
 
-    it("should apply correct styles for required error", () => {
-        const errors = {
-            name: {
-                message: "Field is required",
-                type: "required",
-            },
-        };
+    render(
+      <TestComponent
+        errors={errors as FieldErrors<MockFormValues>}
+        label="Name"
+      />
+    );
 
-        render(
-            <TestComponent
-                errors={errors as FieldErrors<MockFormValues>}
-                label="Name"
-            />
-        );
+    const labelElement = screen.getByText("Name");
+    expect(labelElement).toHaveClass("text-destructive");
+  });
 
-        const labelElement = screen.getByText("Name");
-        expect(labelElement).toHaveClass("text-destructive");
-    });
+  it("should associate input with label for accessibility", () => {
+    render(<TestComponent label="Name" />);
 
-    it("should apply correct styles for pattern error", () => {
-        const errors = {
-            name: {
-                message: "Invalid pattern",
-                type: "pattern",
-            },
-        };
+    const labelElement = screen.getByText("Name");
+    const inputElement = screen.getByPlaceholderText("Enter your name");
 
-        render(
-            <TestComponent
-                errors={errors as FieldErrors<MockFormValues>}
-                label="Name"
-            />
-        );
-
-        const labelElement = screen.getByText("Name");
-        expect(labelElement).toHaveClass("text-destructive");
-    });
-
-    it("should associate input with label for accessibility", () => {
-        render(<TestComponent label="Name" />);
-
-        const labelElement = screen.getByText("Name");
-        const inputElement = screen.getByPlaceholderText("Enter your name");
-
-        expect(labelElement).toHaveAttribute(
-            "for",
-            inputElement.getAttribute("id")
-        );
-    });
+    expect(labelElement).toHaveAttribute(
+      "for",
+      inputElement.getAttribute("id")
+    );
+  });
 });

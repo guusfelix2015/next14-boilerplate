@@ -1,45 +1,41 @@
-import { ScrollArea } from "../components/ScrollArea";
 import { render, screen } from "@testing-library/react";
 
+import { ScrollArea } from "../components/ScrollArea";
+
 describe("ScrollArea", () => {
-    it("should render the ScrollArea with children", () => {
-        render(
-            <ScrollArea data-testid="scroll-area">
-                <div>Test Content</div>
-            </ScrollArea>
-        );
+  it("should render the ScrollArea with children", () => {
+    render(
+      <ScrollArea data-testid="scroll-area">
+        <div>Test Content</div>
+      </ScrollArea>
+    );
 
-        const scrollArea = screen.getByTestId("scroll-area");
-        expect(scrollArea).toBeInTheDocument();
+    const scrollArea = screen.getByTestId("scroll-area");
+    expect(scrollArea).toBeInTheDocument();
 
-        const content = screen.getByText("Test Content");
-        expect(content).toBeInTheDocument();
-    });
+    const content = screen.getByText("Test Content");
+    expect(content).toBeInTheDocument();
+  });
 
-    it("should apply custom classes to ScrollArea", () => {
-        render(
-            <ScrollArea
-                data-testid="scroll-area"
-                className="custom-scroll-area"
-            >
-                <div>Test Content</div>
-            </ScrollArea>
-        );
+  it("should apply custom classes to ScrollArea", () => {
+    render(
+      <ScrollArea className="custom-scroll-area" data-testid="scroll-area">
+        <div>Test Content</div>
+      </ScrollArea>
+    );
 
-        const scrollArea = screen.getByTestId("scroll-area");
-        expect(scrollArea).toHaveClass("custom-scroll-area");
-    });
+    const scrollArea = screen.getByTestId("scroll-area");
+    expect(scrollArea).toHaveClass("custom-scroll-area");
+  });
 
-    it("should conditionally apply classes using cn utility", () => {
-        render(
-            <ScrollArea data-testid="scroll-area" className="additional-class">
-                <div>Test Content</div>
-            </ScrollArea>
-        );
+  it("should conditionally apply classes using cn utility", () => {
+    render(
+      <ScrollArea className="additional-class" data-testid="scroll-area">
+        <div>Test Content</div>
+      </ScrollArea>
+    );
 
-        const scrollArea = screen.getByTestId("scroll-area");
-        expect(scrollArea).toHaveClass(
-            "relative overflow-hidden additional-class"
-        );
-    });
+    const scrollArea = screen.getByTestId("scroll-area");
+    expect(scrollArea).toHaveClass("relative overflow-hidden additional-class");
+  });
 });

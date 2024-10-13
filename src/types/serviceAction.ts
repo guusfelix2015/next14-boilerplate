@@ -1,3 +1,3 @@
 export type ServiceAction = {
-    byPassErrorDetails?: string[];
+  byPassErrorDetails?: string[];
 };
