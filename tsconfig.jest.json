@@ -9,5 +9,10 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true
   },
-  "include": ["src/__tests__", "src/**/*.test.tsx", "src/**/*.test.ts"]
+  "include": [
+    "src/__tests__",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts",
+    "src/**/*.spec.tsx"
+  ]
 }

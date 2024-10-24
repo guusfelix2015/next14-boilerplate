@@ -9,7 +9,7 @@ const createJestConfig = nextJest({
 
 const config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  roots: ["./src/__tests__"],
+  roots: ["./src"],
   testEnvironment: "jest-environment-jsdom",
   preset: "ts-jest",
   transform: {
